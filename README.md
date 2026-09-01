@@ -14,3 +14,17 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+Tạo private key + seed phrase
+
+Mã hoá nhật ký + lưu Hive
+
+Biometric unlock - Window (Storage secure + password)
+
+Backup dữ liệu lên MySQL server
+
+https://chatgpt.com/share/68b40b9a-2860-8010-87d9-66336bfa97b1
+
+bug save data => quay lại chọn ngày bị bug
+
+https://chatgpt.com/c/68e748e0-aa44-8322-a978-59db3265e722
