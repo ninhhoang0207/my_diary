@@ -11,7 +11,8 @@ import '../services/user_service.dart';
 import '../models/user_model.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  final String title;
+  const LoginPage({super.key, this.title = 'My diary'});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -45,10 +46,6 @@ class _LoginPageState extends State<LoginPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('No users found. Redirecting to registration page...')),
         );
-
-        //  Future.delayed(const Duration(seconds: 1), () {
-        //     if (mounted) _register();
-        //   });
       });
     }
   }
@@ -190,7 +187,8 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'Diary Notebook',
+                      // 'Diary Notebook',
+                      widget.title,
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.w600,
