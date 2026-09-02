@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:uuid/uuid.dart';
 
+import '../flavors.dart';
 import '../models/user_model.dart';
 import '../pages/login_page.dart';
 import '../pages/recover_account_page.dart';
@@ -96,8 +97,6 @@ class _RegisterPageState extends State<RegisterPage> {
       salt: salt
     );
     _userBox.add(newUser);
-    // print('Registering Username: $username, Password: $password, id: ${newUser.id}');
-    // print('Salt: $salt, Hashed Password: $hashedPassword');
 
     // save secret key
     await EncriptService().createAndSaveUserPrivateKey(newUser.id, seedPhrase);
@@ -117,7 +116,7 @@ class _RegisterPageState extends State<RegisterPage> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => const LoginPage(),
+        builder: (context) => LoginPage(title: F.title),
       ),
     );
   }
