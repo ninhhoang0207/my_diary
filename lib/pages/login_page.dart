@@ -50,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> _initBiometrics() async {
     bool canAuth = false;
     try {
-      canAuth = await _localAuth.isDeviceSupported() || await _localAuth.canCheckBiometrics;
+      canAuth = (await _localAuth.isDeviceSupported() || await _localAuth.canCheckBiometrics) && _users.isNotEmpty;
     } catch (e) {
       canAuth = false;
     }
@@ -302,13 +302,20 @@ class _LoginPageState extends State<LoginPage> {
                       children: [
                         Expanded(
                           child: ElevatedButton(
-                            onPressed: _login,
+                            onPressed: _canAuthenticate ? _login : null,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF6B4F3A),
                               padding: const EdgeInsets.symmetric(vertical: 14),
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8)),
                               elevation: 4,
+                            ).copyWith(
+                              backgroundColor: WidgetStateProperty.resolveWith((states) {
+                                if (states.contains(WidgetState.disabled)) {
+                                  return Colors.grey;
+                                }
+                                return const Color(0xFF6B4F3A);
+                              }),
                             ),
                             child: const Text('Sign In', style: TextStyle(fontSize: 16, color: Colors.white)),
                           ),
