@@ -9,14 +9,13 @@ import 'flavors.dart';
 
 
 void main() async {
-  await Hive.initFlutter();
-  await HiveService.init();
-
   F.appFlavor = Flavor.values.firstWhere(
     (element) => element.name == appFlavor,
     orElse: () => Flavor.dev,
   );
 
+  await Hive.initFlutter();
+  await HiveService.init();
 
   runApp(const MyApp());
 }

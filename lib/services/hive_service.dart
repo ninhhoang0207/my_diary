@@ -3,12 +3,13 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 
+import '../flavors.dart';
 import '../models/user_model.dart';
 import '../models/diary_model.dart';
 
 class HiveService {
-  static const String diariesBoxName = "diariesBox";
-  static const String usersBoxName = "usersBox";
+  static String get diariesBoxName => 'diariesBox_${F.name}';
+  static String get usersBoxName => 'usersBox_${F.name}';
 
   static Future<void> init() async {
     Hive.registerAdapter(DiaryModelAdapter());
@@ -39,7 +40,7 @@ class HiveService {
   static Future<void> clearAllBoxes() async {
     await Hive.box<DiaryModel>(diariesBoxName).clear();
     await Hive.box<UserModel>(usersBoxName).clear();
-    print("🧹 Đã xóa toàn bộ dữ liệu trong Hive boxes.");
+    // print("🧹 Đã xóa toàn bộ dữ liệu trong Hive boxes.");
   }
 
   /// 📤 Export user-specific database to JSON file
@@ -86,7 +87,7 @@ class HiveService {
       final jsonString = jsonEncode(backupData);
       await file.writeAsString(jsonString);
 
-      print('✅ Database exported for user $userId to: $filePath');
+      // print('✅ Database exported for user $userId to: $filePath');
       return filePath;
     } catch (e) {
       print('❌ Error exporting database: $e');
@@ -140,7 +141,7 @@ class HiveService {
       final jsonString = jsonEncode(backupData);
       await file.writeAsString(jsonString);
 
-      print('✅ Database exported for user $userId to: $customPath');
+      // print('✅ Database exported for user $userId to: $customPath');
       return customPath;
     } catch (e) {
       print('❌ Error exporting database: $e');
@@ -179,7 +180,7 @@ class HiveService {
         await diariesBox.put('${diary.userId}-${diary.title}', diary);
       }
 
-      print('✅ Database imported successfully for user $userId from: $filePath');
+      // print('✅ Database imported successfully for user $userId from: $filePath');
       return true;
     } catch (e) {
       print('❌ Error importing database: $e');
@@ -203,7 +204,7 @@ class HiveService {
       backupFiles.sort((a, b) => b.compareTo(a));
       return backupFiles;
     } catch (e) {
-      print('❌ Error getting backup files list: $e');
+      // print('❌ Error getting backup files list: $e');
       return [];
     }
   }
@@ -214,7 +215,7 @@ class HiveService {
       final file = File(filePath);
       if (await file.exists()) {
         await file.delete();
-        print('✅ Backup file deleted: $filePath');
+        // print('✅ Backup file deleted: $filePath');
         return true;
       }
       return false;

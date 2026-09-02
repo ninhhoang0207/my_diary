@@ -32,19 +32,16 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    _userBox = Hive.box<UserModel>('usersBox');
-    // load users for selection
+    _userBox = HiveService.getUsersBox();
     _users = _userBox.values.toList();
 
     if (_users.isNotEmpty) _selectedUser = _users.first;
     _initBiometrics();
     
     if (_users.isEmpty) {
-     
-     
       WidgetsBinding.instance.addPostFrameCallback((_) { // Fix bug cannot redirect to register page immediately
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No users found. Redirecting to registration page...')),
+          const SnackBar(content: Text('No user was found. Please register.')),
         );
       });
     }
@@ -154,13 +151,19 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   // Clear all Hive data (for testing purposes)
-  
   void _clearData() async {
     await HiveService.clearAllBoxes();
-    
+
+    if (!mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('All data cleared!')),
+    );
+
+    // Redirect to login page after clearing data
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => LoginPage(title: widget.title)),
     );
   }
   

@@ -26,7 +26,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _box = Hive.box<DiaryModel>('diariesBox');
+    _box = HiveService.getDiariesBox();
   }
 
   String _formatDate(DateTime dt) {
