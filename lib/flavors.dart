@@ -8,6 +8,8 @@ class F {
 
   static String get name => appFlavor.name;
 
+  static bool get isDebugMode => appFlavor == Flavor.dev;
+
   static String get title {
     switch (appFlavor) {
       case Flavor.dev:

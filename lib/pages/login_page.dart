@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
+// import 'package:flutter/foundation.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:hive/hive.dart';
 
@@ -9,6 +9,7 @@ import '../pages/recover_account_page.dart';
 import '../services/hive_service.dart';
 import '../services/user_service.dart';
 import '../models/user_model.dart';
+import '../flavors.dart';
 
 class LoginPage extends StatefulWidget {
   final String title;
@@ -357,7 +358,8 @@ class _LoginPageState extends State<LoginPage> {
 
                     const SizedBox(height: 12),
                     Visibility(
-                      visible: kDebugMode,
+                      // visible: kDebugMode,
+                      visible: F.isDebugMode,
                       child: TextButton(
                         onPressed: _clearData,
                         child: const Text('Clear Data',
