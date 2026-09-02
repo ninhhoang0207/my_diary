@@ -1,0 +1,44 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="160" y1="120" x2="860" y2="900" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7B5A43"/>
+      <stop offset="1" stop-color="#4E342E"/>
+    </linearGradient>
+    <linearGradient id="paper" x1="220" y1="200" x2="774" y2="824" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFDF8"/>
+      <stop offset="1" stop-color="#F3E8D8"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="120" y="120" width="784" height="784" rx="180" fill="url(#bg)"/>
+  <rect x="220" y="210" width="584" height="604" rx="62" fill="url(#paper)"/>
+
+  <!-- Left margin -->
+  <rect x="268" y="268" width="10" height="500" rx="5" fill="#D05B5B"/>
+
+  <!-- Ruled notebook lines -->
+  <g stroke="#D9D0C5" stroke-width="8" stroke-linecap="round">
+    <line x1="312" y1="310" x2="720" y2="310"/>
+    <line x1="312" y1="390" x2="720" y2="390"/>
+    <line x1="312" y1="470" x2="720" y2="470"/>
+    <line x1="312" y1="550" x2="720" y2="550"/>
+    <line x1="312" y1="630" x2="720" y2="630"/>
+    <line x1="312" y1="710" x2="720" y2="710"/>
+  </g>
+
+  <!-- Small lock icon -->
+  <g>
+    <rect x="446" y="530" width="132" height="108" rx="22" fill="#C59A5F"/>
+    <path d="M485 530V482C485 442.235 516.235 411 556 411C595.765 411 627 442.235 627 482V530" stroke="#C59A5F" stroke-width="20" stroke-linecap="round"/>
+    <circle cx="556" cy="588" r="16" fill="#FFFDF8"/>
+    <path d="M556 604V622" stroke="#FFFDF8" stroke-width="14" stroke-linecap="round"/>
+  </g>
+
+  <!-- Pen nib accent -->
+  <path d="M730 296L786 350L698 438L642 384L730 296Z" fill="#D8B27A"/>
+  <path d="M698 438L642 384L610 416L666 470L698 438Z" fill="#B8834D"/>
+  <path d="M610 416L666 470L612 522L556 468L610 416Z" fill="#E8D0B0"/>
+
+  <!-- Top wave accent -->
+  <path d="M294 260C336 230 389 212 452 214C520 216 570 250 620 250C678 250 722 218 770 192V254C719 286 670 308 617 308C550 308 506 276 448 274C388 272 342 296 294 332V260Z" fill="#E5D0A6" opacity="0.9"/>
+</svg>

@@ -6,6 +6,7 @@ import '../models/diary_model.dart';
 import 'hive_service.dart';
 import 'user_service.dart';
 import 'encript_service.dart';
+import 'log_service.dart';
 
 class BackupService {
   final _userService = UserService();
@@ -59,6 +60,7 @@ class BackupService {
       return filePath;
     } catch (e) {
       print('❌ Error exporting database: $e');
+      await AppLogger.log('Export failed for user $userId: $e');
       throw Exception('Failed to export database: $e');
     }
   }
@@ -84,9 +86,12 @@ class BackupService {
         throw Exception('Backup file does not contain userId');
       }
 
+      await AppLogger.log('Import success for file: $filePath');
       return _importBackupDiaries(backupData);
-    } catch (e) {
+    } catch (e, stack) {
       print('❌ Error importing database: $e');
+      await AppLogger.log('Import failed for file $filePath: $e');
+      await AppLogger.log('Stack trace: $stack');
       throw Exception('Failed to import database: $e');
     }
   }
@@ -149,9 +154,12 @@ class BackupService {
       await _importBackupDiaries(backupData);
 
       print('✅ Database restored from backup: $filePath');
+      await AppLogger.log('Restore success from file: $filePath');
       return true;
-    } catch (e) {
+    } catch (e, stack) {
       print('❌ Error restoring from backup: $e');
+      await AppLogger.log('Restore failed for file $filePath: $e');
+      await AppLogger.log('Stack trace: $stack');
       throw Exception('Failed to restore from backup: $e');
     }
   }

@@ -6,12 +6,27 @@ import 'package:path_provider/path_provider.dart';
 import '../flavors.dart';
 import '../models/user_model.dart';
 import '../models/diary_model.dart';
+import 'log_service.dart';
 
 class HiveService {
   static String get diariesBoxName => 'diariesBox_${F.name}';
   static String get usersBoxName => 'usersBox_${F.name}';
 
+  static Future<String> getSecureStoragePath() async {
+    final appSupportDir = await getApplicationSupportDirectory();
+    final secureDir = Directory('${appSupportDir.path}/hive');
+
+    if (!await secureDir.exists()) {
+      await secureDir.create(recursive: true);
+    }
+
+    return secureDir.path;
+  }
+
   static Future<void> init() async {
+    final secureStoragePath = await getSecureStoragePath();
+    Hive.init(secureStoragePath);
+
     Hive.registerAdapter(DiaryModelAdapter());
     await Hive.openBox<DiaryModel>(diariesBoxName);
 
@@ -87,7 +102,6 @@ class HiveService {
       final jsonString = jsonEncode(backupData);
       await file.writeAsString(jsonString);
 
-      // print('✅ Database exported for user $userId to: $filePath');
       return filePath;
     } catch (e) {
       print('❌ Error exporting database: $e');
@@ -140,11 +154,12 @@ class HiveService {
 
       final jsonString = jsonEncode(backupData);
       await file.writeAsString(jsonString);
-
+      await AppLogger.log('Hive_service: Export success for user $userId: $customPath');
       // print('✅ Database exported for user $userId to: $customPath');
       return customPath;
-    } catch (e) {
+    } catch (e, stackTrace) {
       print('❌ Error exporting database: $e');
+      await AppLogger.log('exportDatabaseToFile: failed for user $userId: $e : $stackTrace');
       throw Exception('Failed to export database: $e');
     }
   }

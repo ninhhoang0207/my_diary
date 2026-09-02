@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -9,6 +7,7 @@ import '../models/diary_model.dart';
 import '../pages/diary_content_page.dart';
 import '../pages/login_page.dart';
 import '../services/hive_service.dart';
+import '../services/log_service.dart';
 
 class HomePage extends StatefulWidget {
   final String title;
@@ -86,23 +85,17 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _exportData() async {
     try {
-      // Open file picker to let user choose save location
-      String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
-
-      if (selectedDirectory == null) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('⚠️ Export cancelled')),
-          );
-        }
-        return;
-      }
-
-      // Ask user for a file name before exporting
+      await AppLogger.log('Export initiated for user ${widget.user.id}');
       final timestamp = DateTime.now().millisecondsSinceEpoch;
       final suggestedFileName = 'diary_backup_${widget.user.id}_$timestamp.json';
-      final customFileName = await _promptExportFileName(suggestedFileName);
-      if (customFileName == null) {
+      final filePath = await FilePicker.platform.saveFile(
+        dialogTitle: 'Save diary backup',
+        fileName: suggestedFileName,
+        type: FileType.custom,
+        allowedExtensions: ['json'],
+      );
+
+      if (filePath == null) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('⚠️ Export cancelled')),
@@ -110,8 +103,6 @@ class _HomePageState extends State<HomePage> {
         }
         return;
       }
-
-      final filePath = '$selectedDirectory${Platform.pathSeparator}$customFileName';
 
       // Export to the selected location
       final exportedPath = await HiveService.exportDatabaseToCustomPath(widget.user.id, filePath);
@@ -124,8 +115,10 @@ class _HomePageState extends State<HomePage> {
         );
       }
     } catch (e) {
-      print('Export error: $e');
+      await AppLogger.log('Export error for user ${widget.user.id}: $e');
+
       if (mounted) {
+        await AppLogger.log('Export error: $e');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('❌ Export failed: $e'),
@@ -135,62 +128,6 @@ class _HomePageState extends State<HomePage> {
         );
       }
     }
-  }
-
-  Future<String?> _promptExportFileName(String defaultName) async {
-    final controller = TextEditingController(text: defaultName);
-    final formKey = GlobalKey<FormState>();
-
-    return showDialog<String>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Export file name'),
-          content: Form(
-            key: formKey,
-            child: TextFormField(
-              controller: controller,
-              decoration: const InputDecoration(
-                labelText: 'File name',
-                hintText: 'example.json',
-              ),
-              autofocus: true,
-              validator: (value) {
-                final fileName = value?.trim() ?? '';
-                if (fileName.isEmpty) {
-                  return 'File name is required';
-                }
-                if (fileName.contains('/') || fileName.contains('\\')) {
-                  return 'Please enter only a file name, not a path';
-                }
-                return null;
-              },
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(null),
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                if (formKey.currentState?.validate() != true) {
-                  return;
-                }
-
-                var fileName = controller.text.trim();
-                if (!fileName.toLowerCase().endsWith('.json')) {
-                  fileName = '$fileName.json';
-                }
-
-                Navigator.of(context).pop(fileName);
-              },
-              child: const Text('Save'),
-            ),
-          ],
-        );
-      },
-    );
   }
 
   Future<void> _importData() async {

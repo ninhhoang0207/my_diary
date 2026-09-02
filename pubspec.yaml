@@ -61,6 +61,7 @@ dev_dependencies:
     sdk: flutter
 
   flutter_flavorizr: ^2.2.3
+  msix: ^3.16.7
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -116,18 +117,27 @@ flavorizr:
       app:
         name: "My Diary Dev"
       android:
-        applicationId: "com.example.my_diary.dev"
+        applicationId: "my_diary.dev"
       ios:
-        bundleId: "com.example.my_diary.dev"
+        bundleId: "my_diary.dev"
       macos:
-        bundleId: "com.example.my_diary.dev"
+        bundleId: "my_diary.dev"
 
     prod:
       app:
-        name: "My Diary Prod"
+        name: "My Diary"
       android:
-        applicationId: "com.example.my_diary"
+        applicationId: "my_diary"
       ios:
-        bundleId: "com.example.my_diary"
+        bundleId: "my_diary"
       macos:
-        bundleId: "com.example.my_diary"
+        bundleId: "my_diary"
+
+msix_config:
+  display_name: My Diary             # Tên hiển thị khi cài đặt và ở Start Menu
+  publisher_display_name: My self  # Tên công ty / Tác giả
+  identity_name: com.mydiary.app      # ID định danh ứng dụng
+  msix_version: 1.0.0.0               # Phiên bản (Bắt buộc đủ 4 số: Major.Minor.Build.Revision)
+  logo_path: assets/icons/logo.png    # Đường dẫn icon ứng dụng (khuyên dùng file PNG 256x256)
+  capabilities: internetClient             # Cho phép truy cập Internet
+  windows_build_args: --release --dart-define=FLAVOR=prod
