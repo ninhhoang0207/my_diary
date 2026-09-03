@@ -28,3 +28,9 @@ https://chatgpt.com/share/68b40b9a-2860-8010-87d9-66336bfa97b1
 bug save data => quay lại chọn ngày bị bug
 
 https://chatgpt.com/c/68e748e0-aa44-8322-a978-59db3265e722
+
+Building:
+flutter clean
+flutter pub get
+flutter build windows --release --dart-define=FLAVOR=prod
+dart run msix:create

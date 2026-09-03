@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+1
+version: 1.0.0+2
 
 environment:
   sdk: ^3.9.0
@@ -137,7 +137,7 @@ msix_config:
   display_name: My Diary             # Tên hiển thị khi cài đặt và ở Start Menu
   publisher_display_name: My self  # Tên công ty / Tác giả
   identity_name: com.mydiary.app      # ID định danh ứng dụng
-  msix_version: 1.0.0.0               # Phiên bản (Bắt buộc đủ 4 số: Major.Minor.Build.Revision)
+  msix_version: 1.0.0.1               # Phiên bản (Bắt buộc đủ 4 số: Major.Minor.Build.Revision)
   logo_path: assets/icons/logo.png    # Đường dẫn icon ứng dụng (khuyên dùng file PNG 256x256)
   capabilities: internetClient             # Cho phép truy cập Internet
   windows_build_args: --release --dart-define=FLAVOR=prod
