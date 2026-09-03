@@ -53,14 +53,15 @@ class _HomePageState extends State<HomePage> {
 
       return date; // Return the original string if parsing fails
     }
-
   }
 
   void _openDiary(DiaryModel diary) {
     final date = DateTime.tryParse(diary.title);
     if (date == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Invalid date format in diary title: ${diary.title}")),
+        SnackBar(
+          content: Text("Invalid date format in diary title: ${diary.title}"),
+        ),
       );
       return;
     }
@@ -68,7 +69,11 @@ class _HomePageState extends State<HomePage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => DiaryContentPage(date: date, isEditMode: false, userId: widget.user.id),
+        builder: (_) => DiaryContentPage(
+          date: date,
+          isEditMode: false,
+          userId: widget.user.id,
+        ),
       ),
     );
   }
@@ -77,7 +82,11 @@ class _HomePageState extends State<HomePage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => DiaryContentPage(date: DateTime.now(), isEditMode: true, userId: widget.user.id),
+        builder: (_) => DiaryContentPage(
+          date: DateTime.now(),
+          isEditMode: true,
+          userId: widget.user.id,
+        ),
       ),
     );
   }
@@ -93,7 +102,11 @@ class _HomePageState extends State<HomePage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => DiaryContentPage(date: picked, isEditMode: true, userId: widget.user.id),
+          builder: (_) => DiaryContentPage(
+            date: picked,
+            isEditMode: true,
+            userId: widget.user.id,
+          ),
         ),
       );
     }
@@ -109,7 +122,8 @@ class _HomePageState extends State<HomePage> {
   Future<void> _exportData() async {
     try {
       final timestamp = DateTime.now().millisecondsSinceEpoch;
-      final suggestedFileName = 'diary_backup_${widget.user.id}_$timestamp.json';
+      final suggestedFileName =
+          'diary_backup_${widget.user.id}_$timestamp.json';
       final filePath = await FilePicker.platform.saveFile(
         dialogTitle: 'Save diary backup',
         fileName: suggestedFileName,
@@ -119,15 +133,18 @@ class _HomePageState extends State<HomePage> {
 
       if (filePath == null) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('⚠️ Export cancelled')),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('⚠️ Export cancelled')));
         }
         return;
       }
 
       // Export to the selected location
-      final exportedPath = await HiveService.exportDatabaseToCustomPath(widget.user.id, filePath);
+      final exportedPath = await HiveService.exportDatabaseToCustomPath(
+        widget.user.id,
+        filePath,
+      );
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -164,9 +181,9 @@ class _HomePageState extends State<HomePage> {
       if (result == null) {
         // User cancelled the picker
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('⚠️ Import cancelled')),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('⚠️ Import cancelled')));
         }
         return;
       }
@@ -178,37 +195,44 @@ class _HomePageState extends State<HomePage> {
 
       // Show confirmation dialog
       if (!mounted) return;
-      
-      final confirmed = await showDialog<bool>(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Import Backup'),
-          content: const Text('This will restore your diary from the backup file. Continue?'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Cancel'),
+
+      final confirmed =
+          await showDialog<bool>(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Import Backup'),
+              content: const Text(
+                'This will restore your diary from the backup file. Continue?',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  child: const Text(
+                    'Import',
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                ),
+              ],
             ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Import', style: TextStyle(color: Colors.blue)),
-            ),
-          ],
-        ),
-      ) ?? false;
+          ) ??
+          false;
 
       if (!confirmed) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('⚠️ Import cancelled')),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('⚠️ Import cancelled')));
         }
         return;
       }
 
       // Import the backup
       await HiveService.importDatabaseFromFile(filePath);
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -232,7 +256,12 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Widget _buildSubFab({required IconData icon, required String tooltip, required VoidCallback onTap, required Offset offset}) {
+  Widget _buildSubFab({
+    required IconData icon,
+    required String tooltip,
+    required VoidCallback onTap,
+    required Offset offset,
+  }) {
     // Animated sub button that moves from main FAB to offset when _fabOpen true
     return AnimatedPositioned(
       duration: const Duration(milliseconds: 250),
@@ -260,10 +289,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: const Color(0xFFF7F3EA),
       appBar: AppBar(
-        title: Text(
-          widget.title,
-          style: const TextStyle(color: Colors.white),
-        ),
+        title: Text(widget.title, style: const TextStyle(color: Colors.white)),
         backgroundColor: const Color(0xFF6B4F3A),
       ),
       body: Padding(
@@ -292,10 +318,11 @@ class _HomePageState extends State<HomePage> {
                     child: ValueListenableBuilder(
                       valueListenable: _box.listenable(),
                       builder: (context, Box<DiaryModel> box, _) {
-                        final diaries = box.values.where( (diary) => diary.userId == widget.user.id)
-                                                  .toList()
-                                                  .reversed
-                                                  .toList();
+                        final diaries = box.values
+                            .where((diary) => diary.userId == widget.user.id)
+                            .toList()
+                            .reversed
+                            .toList();
                         // final keys = box.keys.toList().reversed.toList();
                         if (diaries.isEmpty) {
                           return const Center(
@@ -315,89 +342,113 @@ class _HomePageState extends State<HomePage> {
                             return InkWell(
                               onTap: () => _openDiary(diary),
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 6),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 14,
+                                  horizontal: 6,
+                                ),
                                 child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Container(
-                                      width: 76,
-                                      padding: const EdgeInsets.only(right: 12),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.end,
-                                        children: [
-                                          Text(
-                                            _formatDate(diary.createdAt),
-                                            style: const TextStyle(
-                                              fontSize: 12,
-                                              color: Colors.black54,
-                                            ),
-                                          ),
-                                        ],
+                                    const Icon(
+                                      Icons.article_outlined,
+                                      size: 20,
+                                      color: Colors.brown,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Text(
+                                        diary.title.isEmpty
+                                            ? '(No title)'
+                                            : getPrettyDate(diary.title),
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.brown,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            diary.title.isEmpty ? '(No title)' : getPrettyDate(diary.title),
-                                            style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.brown,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 6),
-                                        ],
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 12),
+                                      child: Text(
+                                        _formatDate(diary.createdAt),
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.black54,
+                                        ),
                                       ),
                                     ),
                                     // Delete button
-                                    SizedBox(
-                                      width: 48,
-                                      child: IconButton(
-                                        icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
-                                        tooltip: 'Delete',
-                                        onPressed: () async {
-                                          final confirm = await showDialog<bool>(
-                                            context: context,
-                                            builder: (context) => AlertDialog(
-                                              title: const Text('Confirm Delete'),
-                                              content: const Text('Are you sure you want to delete this diary entry?'),
-                                              actions: [
-                                                TextButton(
-                                                  onPressed: () => Navigator.of(context).pop(false),
-                                                  child: const Text('Cancel'),
+                                    IconButton(
+                                      icon: const Icon(
+                                        Icons.delete_outline,
+                                        color: Colors.redAccent,
+                                      ),
+                                      tooltip: 'Delete',
+                                      onPressed: () async {
+                                        final confirm = await showDialog<bool>(
+                                          context: context,
+                                          builder: (context) => AlertDialog(
+                                            title: const Text('Confirm Delete'),
+                                            content: const Text(
+                                              'Are you sure you want to delete this diary entry?',
+                                            ),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () => Navigator.of(
+                                                  context,
+                                                ).pop(false),
+                                                child: const Text('Cancel'),
+                                              ),
+                                              TextButton(
+                                                onPressed: () => Navigator.of(
+                                                  context,
+                                                ).pop(true),
+                                                child: const Text(
+                                                  'Delete',
+                                                  style: TextStyle(
+                                                    color: Colors.red,
+                                                  ),
                                                 ),
-                                                TextButton(
-                                                  onPressed: () => Navigator.of(context).pop(true),
-                                                  child: const Text('Delete', style: TextStyle(color: Colors.red)),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                        if (confirm == true) {
+                                          final diaryKey = box.keys.firstWhere((
+                                            key,
+                                          ) {
+                                            final d = box.get(key);
+                                            return d != null &&
+                                                d.id == diary.id &&
+                                                d.userId == widget.user.id;
+                                          }, orElse: () => null);
+
+                                          if (diaryKey == null) {
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
+                                              const SnackBar(
+                                                content: Text(
+                                                  'Error: Diary entry not found',
                                                 ),
-                                              ],
+                                              ),
+                                            );
+                                            return;
+                                          }
+
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                'Diary entry deleted',
+                                              ),
                                             ),
                                           );
-                                          if (confirm == true) {
-                                            final diaryKey = box.keys.firstWhere(
-                                              (key) {
-                                                final d = box.get(key);
-                                                return d != null && d.id == diary.id && d.userId == widget.user.id;
-                                              },
-                                              orElse: () => null,
-                                            );
-
-                                            if (diaryKey == null) {
-                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                const SnackBar(content: Text('Error: Diary entry not found')),
-                                              );
-                                              return;
-                                            }
-
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              const SnackBar(content: Text('Diary entry deleted')),
-                                            );
-                                            await box.delete(diaryKey);
-                                          }
-                                        },
-                                      ),
+                                          await box.delete(diaryKey);
+                                        }
+                                      },
                                     ),
                                   ],
                                 ),
@@ -451,7 +502,7 @@ class _HomePageState extends State<HomePage> {
                 setState(() => _fabOpen = false);
                 _logout();
               },
-              offset: const Offset(80, 0),
+              offset: const Offset(-10, -36),
             ),
             // Left
             _buildSubFab(
@@ -471,7 +522,7 @@ class _HomePageState extends State<HomePage> {
                 setState(() => _fabOpen = false);
                 _importData();
               },
-              offset: const Offset(-10, -36),
+              offset: const Offset(80, 0),
             ),
             // Main FAB
             Positioned(
@@ -483,7 +534,7 @@ class _HomePageState extends State<HomePage> {
                 child: AnimatedRotation(
                   duration: const Duration(milliseconds: 200),
                   turns: _fabOpen ? 0.125 : 0.0,
-                  child: const Icon(Icons.add),
+                  child: const Icon(Icons.add, color: Colors.white),
                 ),
               ),
             ),
@@ -517,7 +568,9 @@ class _NotebookPainter extends CustomPainter {
       ..color = Colors.brown.withOpacity(0.12)
       ..strokeWidth = 1.0;
     final r = RRect.fromRectAndRadius(
-        Rect.fromLTWH(6, 6, size.width - 12, size.height - 12), const Radius.circular(12));
+      Rect.fromLTWH(6, 6, size.width - 12, size.height - 12),
+      const Radius.circular(12),
+    );
     canvas.drawRRect(r, rectPaint);
   }
 

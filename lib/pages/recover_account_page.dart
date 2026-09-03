@@ -143,7 +143,7 @@ class _RecoverAccountPageState extends State<RecoverAccountPage> {
     return Scaffold(
       backgroundColor: const Color(0xFFF7F3EA),
       appBar: AppBar(
-        title: const Text('Recover Account'),
+        title: const Text('Recover Account', style: TextStyle(color: Colors.white)),
         backgroundColor: const Color(0xFF6B4F3A),
       ),
       body: SingleChildScrollView(
@@ -155,8 +155,8 @@ class _RecoverAccountPageState extends State<RecoverAccountPage> {
             children: [
               const SizedBox(height: 12),
               ElevatedButton.icon(
-                icon: const Icon(Icons.folder_open),
-                label: const Text('Select Backup File'),
+                icon: const Icon(Icons.folder_open, color: Colors.white),
+                label: const Text('Select Backup File', style: TextStyle(color: Colors.white)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF6B4F3A),
                   padding: const EdgeInsets.symmetric(vertical: 14),
@@ -178,6 +178,7 @@ class _RecoverAccountPageState extends State<RecoverAccountPage> {
                     TextFormField(
                       controller: _seedController,
                       maxLines: 3,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
                       decoration: const InputDecoration(
                         labelText: 'Seed Phrase',
                         border: OutlineInputBorder(),
@@ -194,6 +195,7 @@ class _RecoverAccountPageState extends State<RecoverAccountPage> {
                     TextFormField(
                       controller: _passwordController,
                       obscureText: true,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
                       decoration: const InputDecoration(
                         labelText: 'New Password',
                         border: OutlineInputBorder(),
@@ -213,6 +215,7 @@ class _RecoverAccountPageState extends State<RecoverAccountPage> {
                     TextFormField(
                       controller: _confirmPasswordController,
                       obscureText: true,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
                       decoration: const InputDecoration(
                         labelText: 'Confirm Password',
                         border: OutlineInputBorder(),

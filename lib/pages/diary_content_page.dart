@@ -55,11 +55,13 @@ class _DiaryContentPageState extends State<DiaryContentPage> {
     loadDiaryContent();
     
     return Scaffold(
+      backgroundColor: const Color(0xFFF7F3EA),
       appBar: AppBar(
-        title: Text(pageTitle),
+        backgroundColor: const Color(0xFF6B4F3A),
+        title: Text(pageTitle, style: const TextStyle(color: Colors.white)),
         actions: [
           IconButton(
-            icon: Icon(_isEditMode ? Icons.check : Icons.edit),
+            icon: Icon(_isEditMode ? Icons.check : Icons.edit, color: Colors.white),
             tooltip: _isEditMode ? 'Save' : 'Edit',
             onPressed: () {
               if (_isEditMode) {
