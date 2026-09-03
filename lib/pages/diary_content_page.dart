@@ -37,8 +37,8 @@ class _DiaryContentPageState extends State<DiaryContentPage> {
       setState(() {
         userId = id;
         try {
-          final String dateString = getSelectedDateString();
-          final newDiary = DiaryModel(id: 0, title: dateString, content: '', createdAt: DateTime.now(), userId: userId);
+          final String title = getSelectedDateString();
+          final newDiary = DiaryModel(id: 0, title: title, content: '', createdAt: DateTime.now(), userId: userId);
           final diaryId = getDiaryId();
           diary = _box.get(diaryId, defaultValue: newDiary);
         } catch (e) {
@@ -50,14 +50,13 @@ class _DiaryContentPageState extends State<DiaryContentPage> {
 
   @override
   Widget build(BuildContext context) {
-    final String dateString = getSelectedDateString();
-    final String title = getFomattedDate();
+    final String pageTitle = '${getDayOfWeek()}, ${getFomattedDate()}';
     final diaryId = getDiaryId();
     loadDiaryContent();
     
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(pageTitle),
         actions: [
           IconButton(
             icon: Icon(_isEditMode ? Icons.check : Icons.edit),
@@ -68,9 +67,10 @@ class _DiaryContentPageState extends State<DiaryContentPage> {
                  if (!_quillController.document.isEmpty()) {
                   final diaryContent = jsonEncode(_quillController.document.toDelta().toJson());
                   EncriptService().encryptDataWithUserId(diaryContent, userId).then((encriptData) {
+                    final String title = getSelectedDateString();
                     final diaryData = DiaryModel(
                       id: DateTime.now().millisecondsSinceEpoch,
-                      title: dateString,
+                      title: title,
                       content: encriptData,
                       createdAt: DateTime.now(),
                       userId: userId,
@@ -129,7 +129,21 @@ class _DiaryContentPageState extends State<DiaryContentPage> {
 
   String getFomattedDate() {
     final dt = widget.date.toLocal();
-    return '${dt.day.toString().padLeft(2,'0')}/${dt.month.toString().padLeft(2,'0')}/${dt.year}';
+    return '${dt.day.toString().padLeft(2, '0')}/${dt.month.toString().padLeft(2, '0')}/${dt.year}';
+  }
+
+  String getDayOfWeek() {
+    final dt = widget.date.toLocal();
+    const days = [
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday',
+    ];
+    return days[dt.weekday - 1];
   }
 
   String getDiaryId() {
@@ -143,7 +157,6 @@ class _DiaryContentPageState extends State<DiaryContentPage> {
 
       if (encriptDiaryContent.isNotEmpty && encriptDiaryContent != '') {
         EncriptService().decriptDataWithUserId(encriptDiaryContent, userId).then((decriptData) {
-          // print("Decrypted content: $decriptData");
           _quillController.document = decriptData.isNotEmpty
             ? quill.Document.fromJson(jsonDecode(decriptData))
             : quill.Document();

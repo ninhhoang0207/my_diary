@@ -33,6 +33,29 @@ class _HomePageState extends State<HomePage> {
     return '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
   }
 
+  String getPrettyDate(String date) {
+    try {
+      final dt = DateTime.parse(date).toLocal();
+      const days = [
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+        'Sunday',
+      ];
+      final dayOfWeek = days[dt.weekday - 1];
+
+      return '$dayOfWeek, ${dt.day.toString().padLeft(2, '0')}/${dt.month.toString().padLeft(2, '0')}/${dt.year}';
+    } catch (e) {
+      print("Error parsing date: $e");
+
+      return date; // Return the original string if parsing fails
+    }
+
+  }
+
   void _openDiary(DiaryModel diary) {
     final date = DateTime.tryParse(diary.title);
     if (date == null) {
@@ -85,7 +108,6 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _exportData() async {
     try {
-      await AppLogger.log('Export initiated for user ${widget.user.id}');
       final timestamp = DateTime.now().millisecondsSinceEpoch;
       final suggestedFileName = 'diary_backup_${widget.user.id}_$timestamp.json';
       final filePath = await FilePicker.platform.saveFile(
@@ -198,7 +220,6 @@ class _HomePageState extends State<HomePage> {
         setState(() {});
       }
     } catch (e) {
-      print('Import error: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -239,7 +260,10 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: const Color(0xFFF7F3EA),
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(
+          widget.title,
+          style: const TextStyle(color: Colors.white),
+        ),
         backgroundColor: const Color(0xFF6B4F3A),
       ),
       body: Padding(
@@ -316,7 +340,7 @@ class _HomePageState extends State<HomePage> {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            diary.title.isEmpty ? '(No title)' : diary.title,
+                                            diary.title.isEmpty ? '(No title)' : getPrettyDate(diary.title),
                                             style: const TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.w600,
@@ -324,17 +348,6 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                           ),
                                           const SizedBox(height: 6),
-                                          Text(
-                                            diary.content.isEmpty
-                                                ? 'No content'
-                                                : (diary.content.length > 120
-                                                    ? '${diary.content.substring(0, 120)}...'
-                                                    : diary.content),
-                                            style: const TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.black87,
-                                            ),
-                                          ),
                                         ],
                                       ),
                                     ),
